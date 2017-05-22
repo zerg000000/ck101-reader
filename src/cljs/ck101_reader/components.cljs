@@ -40,7 +40,6 @@
   (let [title (re-frame/subscribe [:title])]
     (fn []
       [:div {:style {:height "50px" :width "100%"}}
-       [progress-line {:progress progress :color "blue" :thick "3px"}]
        [:div {:style (merge {:height "47px" :width "100%"
                              :text-align "center" :vertical-align "middle"
                              :line-height "47px" :font-weight "bold"
@@ -61,10 +60,11 @@
                        :min-width "90px"}}
          [micon :fa-home #(re-frame/dispatch [:set-active-panel :home-panel])]
          [micon :fa-list #(swap! toc not)]
-         [micon :fa-cog #()]]]])))
+         [micon :fa-share #()]]]
+        [progress-line {:progress progress :color "blue" :thick "3px"}]])))
 
 (defn read-next []
-  [:div {:style {:height "617px"
+  [:div {:style {:height (:viewport-height @styles)
                  :border "1px solid black"
                  :color "black"
                  :background-color "white"
@@ -118,7 +118,7 @@
   (fn []
     [:div 
       {:on-click #(re-frame/dispatch [:go-next-section (:idx section)])}
-      (take 2 (clojure.string/split (:text section) #"\s+"))]))
+      (take-while #(not (re-find #"[。：「，？]" %)) (clojure.string/split (:text section) #"\s+"))]))
     
 
 (defn list-view [data list-item]

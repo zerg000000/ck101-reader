@@ -1,6 +1,6 @@
 (defproject ck101-reader "0.1.0-SNAPSHOT"
-  :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.9.229"]
+  :dependencies [[org.clojure/clojure "1.9.0-alpha16"]
+                 [org.clojure/clojurescript "1.9.542"]
                  [reagent "0.6.0"]
                  [re-frame "0.9.2"]
                  [re-frisk "0.3.2"]
@@ -24,8 +24,7 @@
   :source-paths ["src/clj"]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"
-                                    "test/js"
-                                    "resources/public/css"]
+                                    "test/js"]
 
   :figwheel {:css-dirs ["resources/public/css"]
              :ring-handler ck101-reader.handler/dev-handler}

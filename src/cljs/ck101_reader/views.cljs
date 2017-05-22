@@ -4,6 +4,7 @@
       [reagent.core :as r]
       [ck101-reader.components :as com]))
 
+(com/setup-resize!)
 ;; home
 
 (defn home-panel []
@@ -63,12 +64,12 @@
                    :display (if @toc "block" "none")}
            :on-click #(swap! toc not)}]
         [:div.toc
-          {:style {:position "absolute" 
-                   :width "300px" 
-                   :height "617px" 
+          {:style {:position "fixed"
+                   :width (:viewport-width @com/styles)
+                   :height (:viewport-height @com/styles)
                    :top "0px" 
-                   :left (if @toc "0px" "-300px")
-                   :transition "all 0.3s ease"
+                   :left (str ((if @toc - +) (:viewport-width @com/styles) (:viewport-width @com/styles)) "px")
+                   :transition "left 0.3s ease"
                    :background-color "white"
                    :overflow-y "scroll"}}
           [com/list-view

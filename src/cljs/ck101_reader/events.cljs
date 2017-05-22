@@ -47,7 +47,7 @@
   (fn [db [_ idx]]
     (let [cur (get-in db [:current])
           next-section-idx (if idx (dec idx) (inc (second cur)))
-          has-next (get-in db [:posts (first cur) next-section-idx])]
+          has-next (get-in db [:posts (first cur) :sections next-section-idx])]
       (if has-next
         (assoc db :current [(first cur) next-section-idx 0])
         db))))
@@ -63,7 +63,6 @@
   (fn [db [_ id]]
     (update-in db [:posts] dissoc id)))
         
-
 (re-frame/reg-event-db
   :resume-post
   (fn [db [_ post-id]]

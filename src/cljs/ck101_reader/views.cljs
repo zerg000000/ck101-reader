@@ -58,15 +58,15 @@
       [:div.container {:style {:position "relative"}}
         [:div.backdrop
           {:style {:position "absolute" 
-                   :width (:viewport-width @com/styles) 
-                   :height (:viewport-height @com/styles)
+                   :width (str (:viewport-width @com/styles)) "px"
+                   :height (str (:viewport-height @com/styles) "px")
                    :background-color "rgba(0,0,0,0.3)"
                    :display (if @toc "block" "none")}
            :on-click #(swap! toc not)}]
         [:div.toc
           {:style {:position "fixed"
-                   :width (:viewport-width @com/styles)
-                   :height (:viewport-height @com/styles)
+                   :width (str (/ (:viewport-width @com/styles) 2) "px")
+                   :height (str (:viewport-height @com/styles) "px") 
                    :top "0px" 
                    :left (str ((if @toc - +) (:viewport-width @com/styles) (:viewport-width @com/styles)) "px")
                    :transition "left 0.3s ease"

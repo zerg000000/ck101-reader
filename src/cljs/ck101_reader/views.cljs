@@ -58,7 +58,7 @@
       [:div.container {:style {:position "relative"}}
         [:div.backdrop
           {:style {:position "absolute" 
-                   :width (str (:viewport-width @com/styles)) "px"
+                   :width (str (:viewport-width @com/styles) "px")
                    :height (str (:viewport-height @com/styles) "px")
                    :background-color "rgba(0,0,0,0.3)"
                    :display (if @toc "block" "none")}

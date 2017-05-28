@@ -6,7 +6,7 @@
                  [re-frisk "0.3.2"]
                  [secretary "1.2.3"]
                  [day8.re-frame/http-fx "0.1.3"]
-                 [cljsjs/react-mdl "1.10.1-1"]
+                 [com.yetanalytics/re-mdl "0.1.6"]
                  [ns-tracker "0.3.0"]
                  [compojure "1.5.0"]
                  [yogthos/config "0.8"]

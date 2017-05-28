@@ -36,19 +36,15 @@
    [:i.fa
     {:class (name kw)}]])
 
-(defn readbar [progress toc]
+(defn readbar [toc]
   (let [title (re-frame/subscribe [:title])]
     (fn []
       [:div {:style {:height "50px" :width "100%"}}
-       [:div {:style (merge {:height "47px" :width "100%"
-                             :text-align "center" :vertical-align "middle"
-                             :line-height "47px" :font-weight "bold"
-                             :transition "all 0.3s ease"
-                             :display "flex"}
-                            (if (< @progress 10)
-                                {:font-size "1.2em"
-                                 :height "40px" :line-height "40px"}
-                                {}))}
+       [:div {:style {:height "47px" :width "100%"
+                      :text-align "center" :vertical-align "middle"
+                      :line-height "47px" :font-weight "bold"
+                      :transition "all 0.3s ease"
+                      :display "flex"}}
         [:div {:style {:height "40px"
                        :white-space "nowrap" 
                        :overflow "hidden"
@@ -63,14 +59,14 @@
          [micon :fa-share #()]]]])))
 
 (defn read-next []
-  [:div {:style {:height (:viewport-height @styles)
+  [:div {:style {:height "200px"
                  :border "1px solid black"
                  :color "black"
                  :background-color "white"
                  :text-align "center"
                  :margin-bottom "50px"}}
-   [:div {:style {:font-size "1.8em"}} "向下滾動讀下一章"]
-   [:div [:i.fa.fa-5x.fa-arrow-down]]
+   [:div {:style {:font-size "1.8em"}
+          :on-click #(re-frame/dispatch [:go-next-section])} "按下讀下一章"]
    [:div [:i.fa.fa-5x.fa-arrow-down]]])
 
 (defn text-view [text progress]
@@ -81,6 +77,11 @@
              top (* (- (.-scrollHeight dom) (.-clientHeight dom)) (/ percent 100))]
           (if (> percent 0)
             (set! (.-scrollTop dom) top)))
+     :component-did-update
+      #(let [percent @progress
+             dom (r/dom-node %)
+             top (* (- (.-scrollHeight dom) (.-clientHeight dom)) (/ percent 100))]
+          (set! (.-scrollTop dom) top))
      :display-name "TextView"
      :reagent-render
      (fn []
@@ -89,11 +90,7 @@
           :on-scroll (fn [evt]
                        (let [dom (.-target evt)
                              percent (/ (.-scrollTop dom) (- (.-scrollHeight dom) (.-clientHeight dom)))]
-                         (if (>= percent 1)
-                             (do (aset dom "scrollTop" 0)
-                                 (re-frame/dispatch [:go-next-section]))
-                             (re-frame/dispatch [:set-progress (* percent 100)])
-                             )))}
+                        (re-frame/dispatch [:set-progress (* percent 100)])))}
          (map-indexed
            (fn [idx item]
              ^{:key idx}

@@ -65,7 +65,7 @@
           [com/list-view
             sections com/section-list-item]]
         [:div.main {:style {:display "flex" :flex-direction "column"}}
-          [com/readbar progress toc]
+          [com/readbar toc]
           [com/text-view text progress]]])))
 
 ;; main

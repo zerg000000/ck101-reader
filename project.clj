@@ -23,6 +23,9 @@
 
   :source-paths ["src/clj"]
 
+  :jvm-opts ["-Dclojure.compiler.elide-meta=[:doc :file :line :added]" 
+             "-Dclojure.compiler.direct-linking=true"]
+
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"
                                     "test/js"]
 

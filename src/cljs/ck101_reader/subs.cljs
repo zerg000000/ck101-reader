@@ -52,6 +52,11 @@
     (vals (get-in db [:posts]))))
 
 (re-frame/reg-sub
+  :preview
+  (fn [db _]
+    (get-in db [:preview])))
+
+(re-frame/reg-sub
   :url-text
   (fn [db _]
     (get-in db [:url-text])))

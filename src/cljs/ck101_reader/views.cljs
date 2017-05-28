@@ -7,8 +7,13 @@
 (com/setup-resize!)
 ;; home
 
+(defn get-id-from-link [url]
+  (let [[_ post-id] (re-find #"ck101.com/thread-(\d+)-" url)]
+    (js/parseInt post-id)))
+
 (defn home-panel []
   (let [fetching (re-frame/subscribe [:fetching])
+        preview (re-frame/subscribe [:preview])
         posts (re-frame/subscribe [:posts])]
     (fn []
       [:div {:style {:display "flex" :flex-direction "column"}}
@@ -18,28 +23,20 @@
                   :padding "5px 10px"
                   :border-bottom "1px solid black"}}
          [:input {:type "text"
-                  :on-change #(re-frame/dispatch [:input-url-text (-> % .-target .-value)])
+                  :on-change #(do (re-frame/dispatch [:input-url-text (-> % .-target .-value)])
+                                  (when (get-id-from-link (-> % .-target .-value))
+                                    (re-frame/dispatch [:preview-info (-> % .-target .-value)])))
                   :placeholder "Enter CK101 URL..."
                   :style {:outline "none"
                           :border "none"
                           :font-size "15px"
                           :height "30px"}}]]
-       [:div.button
-         {:style {:padding "5px 10px"
-                  :display "flex"
-                  :flex-direction "column"}}  
-         [:button {:on-click #(re-frame/dispatch [:fetch-post])
-                   :style {:height "30px" 
-                           :margin-top "10px"
-                           :font-size "15px"
-                           :font-weight "bold"
-                           :color "white" 
-                           :background-color "blue" 
-                           :outline "none" 
-                           :border "none"}}
-            (if @fetching
-              "Loading..."
-              "Fetch and Cache!")]]
+       (when @preview
+         [:div 
+           {:on-click #(re-frame/dispatch [:fetch-post @preview])} 
+           (if @fetching
+              "Loading"
+              (str @preview))])
        [:h3 "Cached Content"]
        [com/list-view 
          posts
@@ -64,14 +61,7 @@
                    :display (if @toc "block" "none")}
            :on-click #(swap! toc not)}]
         [:div.toc
-          {:style {:position "fixed"
-                   :width (str (/ (:viewport-width @com/styles) 2) "px")
-                   :height (str (:viewport-height @com/styles) "px") 
-                   :top "0px" 
-                   :left (str ((if @toc - +) (:viewport-width @com/styles) (:viewport-width @com/styles)) "px")
-                   :transition "left 0.3s ease"
-                   :background-color "white"
-                   :overflow-y "scroll"}}
+          {:style (assoc (:toc @com/styles) :left (str ((if @toc - +) (:viewport-width @com/styles) 300) "px"))}
           [com/list-view
             sections com/section-list-item]]
         [:div.main {:style {:display "flex" :flex-direction "column"}}

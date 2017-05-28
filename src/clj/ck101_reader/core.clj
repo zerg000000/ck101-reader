@@ -43,6 +43,11 @@
       posts)
     []))
 
+(defn fetch-all-sync [link-seq transform-fn ajax-interval]
+  (into []
+    (for [link link-seq]
+      (transform-fn @(http/get link)))))
+
 (defn fetch-all
   " link-seq - url need to fetch in string format
     transform-fn - transform the html to list of data item

@@ -8,6 +8,13 @@
     {:text-view {:height (str (- viewport-height readbar-height) "px")
                  :padding "0px 1.7em"
                  :overflow-y "scroll"}
+     :toc {:position "fixed"
+           :width "300px"
+           :height (str viewport-height "px") 
+           :top "0px"
+           :transition "left 0.3s ease"
+           :background-color "white"
+           :overflow-y "scroll"}
      :viewport-height viewport-height
      :viewport-width viewport-width}))
 
@@ -21,13 +28,6 @@
         (fn [evt]
           (reset! styles
                   (get-reader-styles (.-innerHeight js/window) (.-innerWidth js/window))))))
-
-(defn progress-line [{:keys [progress thick color]}]
-  (fn []
-    [:div {:style {:width "100%"}}
-     [:div {:style {:height thick
-                    :width (str @progress "%")
-                    :background-color color}}]]))
 
 (defn micon [kw on-click]
   [:div
@@ -60,8 +60,7 @@
                        :min-width "90px"}}
          [micon :fa-home #(re-frame/dispatch [:set-active-panel :home-panel])]
          [micon :fa-list #(swap! toc not)]
-         [micon :fa-share #()]]]
-        [progress-line {:progress progress :color "blue" :thick "3px"}]])))
+         [micon :fa-share #()]]]])))
 
 (defn read-next []
   [:div {:style {:height (:viewport-height @styles)

@@ -224,3 +224,9 @@ exit
 (use :reload 'ck101-reader.core)
 (extract-post-info (slurp "testResources/test1.html") "thread-1-1.html")
 exit
+(use :reload 'ck101-reader.core)
+(fetch-all (map (partial get-page-link 3832789) (range 65)) extract-page-content 100)
+exit
+(use :reload 'ck101-reader.core)
+(fetch-all-sync (map (partial get-page-link 3832789) (range 65)) extract-page-content 100)
+exit

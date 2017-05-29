@@ -2,7 +2,8 @@
     (:require [re-frame.core :as re-frame]
               [day8.re-frame.http-fx]
               [ajax.core :as ajax]
-              [ck101-reader.db :as db]))
+              [ck101-reader.db :as db]
+              [re-mdl.core  :as mdl]))
 
 ; interceptors
 
@@ -81,13 +82,12 @@
     (-> (assoc-in db [:posts (:id val) :sections] (:sections val))
         (assoc
            :fetching false
-           :current [(:id val) 1 0]
-           :active-panel :view-panel))))
+           :preview nil))))
 
 (re-frame/reg-event-fx
   :fetch-post
   (fn [{:keys [db]} [_ info]]
-    {:db (-> (assoc db :fetching true)
+    {:db (-> (assoc db :fetching true :preview nil)
              (assoc-in [:posts (:id info)] info))
      :http-xhrio {:method :get
                   :uri (str "/fetch_post?id=" (:id info) "&start=" 1 "&end=" (:total-page info))
@@ -104,6 +104,9 @@
 (re-frame/reg-event-db
   :preview-failure
   (fn [db [_ val]]
+    (println "preview failed")
+    (mdl/snackbar! :message        "網址不正確！"
+                   :timeout        2000)
     (assoc db :preview nil :fetching false)))
 
 (re-frame/reg-event-fx
@@ -118,22 +121,6 @@
                   :on-failure [:preview-failure]}}))
 
 (re-frame/reg-event-db
-  :preview-success
-  (fn [db [_ val]]
-    (assoc db :preview val :fetching false)))
-
-(re-frame/reg-event-db
-  :preview-failure
-  (fn [db [_ val]]
-    (assoc db :preview nil :fetching false)))
-
-(re-frame/reg-event-fx
-  :preview-info
-  (fn [{:keys [db]} [_ url]]
-    {:db (assoc db :fetching true)
-     :http-xhrio {:method :get
-                  :uri (str "/post_info?url=" url)
-                  :timeout 30000
-                  :response-format (ajax/json-response-format {:keywords? true})
-                  :on-success [:preview-success]
-                  :on-failure [:preview-failure]}}))
+  :update-onoffline
+  (fn [db [_ online?]]
+    (assoc db :online? online?)))

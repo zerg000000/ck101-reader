@@ -1,7 +1,8 @@
 (ns ck101-reader.components
   (:require
     [re-frame.core :as re-frame]
-    [reagent.core :as r]))
+    [reagent.core :as r]
+    [re-mdl.core  :as mdl]))
 
 (defn get-reader-styles [viewport-height viewport-width]
   (let [readbar-height 50]
@@ -29,34 +30,56 @@
           (reset! styles
                   (get-reader-styles (.-innerHeight js/window) (.-innerWidth js/window))))))
 
-(defn micon [kw on-click]
-  [:div
-   {:style {:flex "0 0 30px"}
-    :on-click on-click}
-   [:i.fa
-    {:class (name kw)}]])
+(defn get-id-from-link [url]
+  (let [[_ post-id] (re-find #"ck101.com/thread-(\d+)-" url)]
+    (js/parseInt post-id)))
 
-(defn readbar [toc]
-  (let [title (re-frame/subscribe [:title])]
+(defn viewbar []
+  (let [title (re-frame/subscribe [:title])
+        online? (re-frame/subscribe [:online?])]
     (fn []
-      [:div {:style {:height "50px" :width "100%"}}
-       [:div {:style {:height "47px" :width "100%"
-                      :text-align "center" :vertical-align "middle"
-                      :line-height "47px" :font-weight "bold"
-                      :transition "all 0.3s ease"
-                      :display "flex"}}
-        [:div {:style {:height "40px"
-                       :white-space "nowrap" 
-                       :overflow "hidden"
-                       :text-overflow "ellipsis"
-                       :padding-left "2em" :text-align "left"}} @title]
-        [:div {:style {:height "40px" :padding-right "2em" 
-                       :flex "1 0 auto" :text-align "right" 
-                       :display "flex" :justify-content "flex-end"
-                       :min-width "90px"}}
-         [micon :fa-home #(re-frame/dispatch [:set-active-panel :home-panel])]
-         [micon :fa-list #(swap! toc not)]
-         [micon :fa-share #()]]]])))
+      [mdl/layout-header
+        :children
+        [[mdl/layout-header-row
+           :children
+           [[mdl/layout-title
+              :label @title]
+            [mdl/layout-spacer]
+            [mdl/layout-nav
+              :children
+              [(when (not @online?)
+                 [:a
+                   {:href "/#/"}
+                   [:i.material-icons
+                     "airplanemode_active"]])
+               [:a
+                 {:href "/#/"}
+                 [:i.material-icons
+                   "home"]]]]]]]])))
+
+(defn homebar []
+  (fn []
+    [mdl/layout-header
+      :children
+      [[mdl/layout-header-row
+        :children
+        [[mdl/layout-title
+          :label "卡提諾閱讀器"]
+         [mdl/layout-spacer]
+         [mdl/textfield
+           :id "get-info"
+           :handler-fn      #(do (re-frame/dispatch [:input-url-text %])
+                                 (when (get-id-from-link %)
+                                   (re-frame/dispatch [:preview-info %])))
+           :expandable?     true
+           :floating-label? true
+           :expand-icon     "search"]]]]]))
+
+(defn readbar [panel-name]
+  (case @panel-name
+    :view-panel [viewbar]
+    :home-panel [homebar]
+    [:div]))
 
 (defn read-next []
   [:div {:style {:height "200px"
@@ -97,30 +120,9 @@
              [:p {:class (str "sec1-l" idx)}
               (str item)])
            (-> @text (clojure.string/split #"\s+")))
-         [read-next]])}))
-
-(defn book-list-item [post]
-  (fn []
-    [:div  
-      [:div
-        [:div
-          {:on-click #(re-frame/dispatch [:resume-post (:id post)])}
-          [:img {:src (:cover-image post)
-                   :height "240px" :width "600px"}]]
-        [:div (:book-name post)]
-        [micon :fa-trash #(re-frame/dispatch [:delete-post (:id post)])]]]))
-
-(defn section-list-item [section]
-  (fn []
-    [:div 
-      {:on-click #(re-frame/dispatch [:go-next-section (:idx section)])}
-      (take-while #(not (re-find #"[。：「，？]" %)) (clojure.string/split (:text section) #"\s+"))]))
-    
-
-(defn list-view [data list-item]
-  [:div.list-view
-    (map-indexed
-      (fn [idx item]
-        ^{:key idx}
-        [list-item item])
-      @data)])
+         [mdl/button
+           :raised? true
+           :colored? true
+           :ripple-effect? true
+           :on-click #(re-frame/dispatch [:go-next-section])
+           :child "看下一章"]])}))

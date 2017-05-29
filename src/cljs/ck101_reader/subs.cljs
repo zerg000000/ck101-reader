@@ -60,3 +60,8 @@
   :url-text
   (fn [db _]
     (get-in db [:url-text])))
+
+(re-frame/reg-sub
+  :online?
+  (fn [db _]
+    (get-in db [:online?])))

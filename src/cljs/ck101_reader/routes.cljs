@@ -21,8 +21,11 @@
   (defroute "/" []
     (re-frame/dispatch [:set-active-panel :home-panel]))
 
-  (defroute "/view/:post/:comment" [post comment]
-    (re-frame/dispatch [:set-active-panel :view-panel]))
+  (defroute "/view/:post/delete" [post]
+    (re-frame/dispatch [:delete-post (js/parseInt post)]))
+
+  (defroute "/view/:post" [post]
+    (re-frame/dispatch [:resume-post (js/parseInt post)]))
 
 
   ;; --------------------

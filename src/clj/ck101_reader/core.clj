@@ -21,12 +21,13 @@
 (defn extract-post-info [raw-text url]
   (assoc
       (extract (parse raw-text)
-               [:book-name :url :cover-image :total-section :total-page]
+               [:book-name :url :cover-image :total-section :total-page :description]
                "#thread_subject" text
                "meta[property=og:url]" (attr "content")
                "meta[property=og:image]" (attr "content")
                ".replayNum" text
-               ".replayNum" (chain text get-total-page))
+               ".replayNum" (chain text get-total-page)
+               "meta[property=og:description]" (attr "content"))
       :id (get-id-from-link url)))
 
 (defn fetch-post [url]

@@ -34,7 +34,7 @@
   (let [[_ post-id] (re-find #"ck101.com/thread-(\d+)-" url)]
     (js/parseInt post-id)))
 
-(defn viewbar []
+(defn viewbar [panel-name]
   (let [title (re-frame/subscribe [:title])
         online? (re-frame/subscribe [:online?])]
     (fn []
@@ -43,54 +43,31 @@
         [[mdl/layout-header-row
            :children
            [[mdl/layout-title
-              :label @title]
+              :label (case @panel-name
+                       :view-panel ""
+                       "卡提諾閱讀器")]
             [mdl/layout-spacer]
-            [mdl/layout-nav
-              :children
-              [(when (not @online?)
+            (case @panel-name
+              :view-panel
+              [mdl/layout-nav
+                :children
+                [(when (not @online?)
+                   [:a
+                     {:href "/#/"}
+                     [:i.material-icons
+                       "airplanemode_active"]])
                  [:a
                    {:href "/#/"}
                    [:i.material-icons
-                     "airplanemode_active"]])
-               [:a
-                 {:href "/#/"}
-                 [:i.material-icons
-                   "home"]]]]]]]])))
-
-(defn homebar []
-  (fn []
-    [mdl/layout-header
-      :children
-      [[mdl/layout-header-row
-        :children
-        [[mdl/layout-title
-          :label "卡提諾閱讀器"]
-         [mdl/layout-spacer]
-         [mdl/textfield
-           :id "get-info"
-           :handler-fn      #(do (re-frame/dispatch [:input-url-text %])
-                                 (when (get-id-from-link %)
-                                   (re-frame/dispatch [:preview-info %])))
-           :expandable?     true
-           :floating-label? true
-           :expand-icon     "search"]]]]]))
-
-(defn readbar [panel-name]
-  (case @panel-name
-    :view-panel [viewbar]
-    :home-panel [homebar]
-    [:div]))
-
-(defn read-next []
-  [:div {:style {:height "200px"
-                 :border "1px solid black"
-                 :color "black"
-                 :background-color "white"
-                 :text-align "center"
-                 :margin-bottom "50px"}}
-   [:div {:style {:font-size "1.8em"}
-          :on-click #(re-frame/dispatch [:go-next-section])} "按下讀下一章"]
-   [:div [:i.fa.fa-5x.fa-arrow-down]]])
+                     "home"]]]]
+              [mdl/textfield
+               :id "get-info"
+               :handler-fn      #(do (re-frame/dispatch [:input-url-text %])
+                                     (when (get-id-from-link %)
+                                       (re-frame/dispatch [:preview-info %])))
+               :expandable?     true
+               :floating-label? true
+               :expand-icon     "search"])]]]])))
 
 (defn text-view [text progress]
   (r/create-class

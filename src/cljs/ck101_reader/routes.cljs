@@ -24,6 +24,9 @@
   (defroute "/view/:post/delete" [post]
     (re-frame/dispatch [:delete-post (js/parseInt post)]))
 
+  (defroute "/view/:post/:section" [post section]
+    (re-frame/dispatch [:go-next-section (js/parseInt section)]))
+
   (defroute "/view/:post" [post]
     (re-frame/dispatch [:resume-post (js/parseInt post)]))
 

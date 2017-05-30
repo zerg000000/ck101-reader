@@ -57,29 +57,39 @@
 
 (defn view-panel []
   (let [progress (re-frame/subscribe [:progress])
-        text (re-frame/subscribe [:current-text])
-        sections (re-frame/subscribe [:current-sections])]
+        text (re-frame/subscribe [:current-text])]
     (fn []
       [com/text-view text progress])))
 
 ;; main
 
 (defn- panels [panel-name]
-  [mdl/layout
-        :fixed-header? true
-        :children
-        [[com/readbar panel-name]
-         [mdl/layout-drawer
-           :children
-           [[mdl/layout-title
-             :label "Title"]]]
-         [mdl/layout-content
-           :children
-           [(case @panel-name
-              :home-panel [home-panel]
-              :view-panel [view-panel]
-              [:div])
-            [mdl/snackbar-target]]]]])
+  (let [sections (re-frame/subscribe [:current-sections])
+        current (re-frame/subscribe [:current])]
+    [mdl/layout
+          :fixed-header? true
+          :children
+          [[com/viewbar panel-name]
+           [mdl/layout-drawer
+             :children
+             [[mdl/layout-title
+               :label "Title"]
+              (when (and (= :view-panel @panel-name) @sections)
+                [mdl/layout-nav
+                  :children
+                  (into []
+                        (for [{:keys [idx text]} @sections]
+                          ^{:key idx} 
+                          [mdl/layout-nav-link
+                            :href    (str "/#/view/" (first @current) "/" idx)
+                            :content idx]))])]]  
+           [mdl/layout-content
+             :children
+             [(case @panel-name
+                :home-panel [home-panel]
+                :view-panel [view-panel]
+                [:div])
+              [mdl/snackbar-target]]]]]))
 
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [:active-panel])]

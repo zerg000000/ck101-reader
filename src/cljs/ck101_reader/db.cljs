@@ -3,6 +3,8 @@
     [re-frame.core :as re-frame]
     [cljs.reader :as reader]))
 
+(set! *warn-on-infer* true)
+
 (def default-db
   {:progress 0
    :fetching false

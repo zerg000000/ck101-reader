@@ -18,7 +18,7 @@
                  [http-kit "2.3.0-alpha2"]
                  [org.clojure/core.async "0.3.442"]]
 
-  :plugins [[lein-cljsbuild "1.1.4"]]
+  :plugins [[lein-cljsbuild "1.1.6"]]
 
   :min-lein-version "2.5.3"
 

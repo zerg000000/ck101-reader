@@ -24,6 +24,11 @@
       (get-in db [:posts post-id :book-name]))))
 
 (re-frame/reg-sub
+  :current
+  (fn [db _]
+    (get-in db [:current])))
+
+(re-frame/reg-sub
   :current-text
   (fn [db _]
     (let [[post-id idx] (:current db)]

@@ -25,7 +25,7 @@
                :children
                [[mdl/list-item-primary-content
                   :avatar "person"
-                  :attr {:href  (str "/#/view/" (:id post))}
+                  :attr {:href  (str "#/view/" (:id post))}
                   :el    :a
                   :child (:book-name post)
                   :children
@@ -34,7 +34,7 @@
                 [mdl/list-item-secondary-content
                   :children
                   [[mdl/list-item-secondary-action
-                    :href  (str "/#/view/" (:id post) "/delete")
+                    :href  (str "#/view/" (:id post) "/delete")
                     :el    :a
                     :child [:i.material-icons "delete"]]]]]]))]
         (when @preview
@@ -81,7 +81,7 @@
                         (for [{:keys [idx text]} @sections]
                           ^{:key idx} 
                           [mdl/layout-nav-link
-                            :href    (str "/#/view/" (first @current) "/" idx)
+                            :href    (str "#/view/" (first @current) "/" idx)
                             :content idx]))])]]  
            [mdl/layout-content
              :children

@@ -53,11 +53,11 @@
                 :children
                 [(when (not @online?)
                    [:a
-                     {:href "/#/"}
+                     {:href "#/"}
                      [:i.material-icons
                        "airplanemode_active"]])
                  [:a
-                   {:href "/#/"}
+                   {:href "#/"}
                    [:i.material-icons
                      "home"]]]]
               [mdl/textfield

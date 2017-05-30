@@ -1,7 +1,7 @@
 (defproject ck101-reader "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.9.0-alpha16"]
                  [org.clojure/clojurescript "1.9.542"]
-                 [reagent "0.6.2"]
+                 [reagent "0.6.2" :exclusions [cljsjs/react]]
                  [cljsjs/react-with-addons "15.4.2-2"]
                  [re-frame "0.9.2"]
                  [re-frisk "0.3.2"]

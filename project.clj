@@ -14,6 +14,7 @@
                  [ring "1.4.0"]
                  [ring/ring-defaults "0.3.0"]
                  [ring-middleware-format "0.7.2"]
+                 [bk/ring-gzip "0.2.1"]
                  [reaver "0.1.2"]
                  [http-kit "2.3.0-alpha2"]
                  [org.clojure/core.async "0.3.442"]]

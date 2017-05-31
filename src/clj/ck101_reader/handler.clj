@@ -5,6 +5,7 @@
             [ring.middleware.reload :refer [wrap-reload]]
             [ring.middleware.defaults :refer [api-defaults wrap-defaults]]
             [ring.middleware.format :refer [wrap-restful-format]]
+            [ring.middleware.gzip :refer [wrap-gzip]]
             [ck101-reader.core :as rdr]))
 
 (defroutes routes
@@ -21,6 +22,6 @@
   (GET "/" [] (resource-response "index.html" {:root "public"}))
   (resources "/"))
 
-(def dev-handler (-> #'routes wrap-reload (wrap-defaults api-defaults) (wrap-restful-format)))
+(def dev-handler (-> #'routes wrap-reload (wrap-defaults api-defaults) (wrap-restful-format) (wrap-gzip)))
 
 (def handler routes)

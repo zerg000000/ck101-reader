@@ -37,7 +37,7 @@
 /* eslint-disable indent, no-unused-vars, no-multiple-empty-lines, max-nested-callbacks, space-before-function-paren, quotes, comma-spacing */
 'use strict';
 
-var precacheConfig = [["css/font-awesome.min.css","c0b5c87e2b664580eabac3312785b2b8"],["fonts/FontAwesome.otf","0d2717cd5d853e5c765ca032dfd41a4d"],["fonts/fontawesome-webfont.eot","674f50d287a8c48dc19ba404d20fe713"],["fonts/fontawesome-webfont.svg","912ec66d7572ff821749319396470bde"],["fonts/fontawesome-webfont.ttf","b06871f281fee6b241d60582ae9369b9"],["fonts/fontawesome-webfont.woff","fee66e712a8a08eef5805a46892932ad"],["fonts/fontawesome-webfont.woff2","af7ae505a9eed503f8b8e6982036873e"],["index.html","62904f5361764c7cfc9b52133e3ced85"],["js/compiled/app.js","9b75dec2bb93e86849a66c1173189235"]];
+var precacheConfig = [["css/dialog-polyfill.css","984d480ffc2be9e051a23632cf63072f"],["css/material.min.css","0c0ecf74963d2482fdc7e868a5408656"],["index.html","7ad1834c8ce2a86a0b5deac2ed087447"],["js/compiled/app.js","a8a5a59594c52ec2c8acd9df98a6efd2"]];
 var cacheName = 'sw-precache-v3-sw-precache-' + (self.registration ? self.registration.scope : '');
 
 

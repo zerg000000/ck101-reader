@@ -41,7 +41,7 @@
          [mdl/dialog
            :children
            [[mdl/dialog-title
-            :child (:book-name @preview)]
+             :child (:book-name @preview)]
             [mdl/dialog-content
              :children
              [[:p (:description @preview)]]]
@@ -50,6 +50,7 @@
              [[mdl/button
                :child    "加到離線閱讀"
                :on-click #(re-frame/dispatch [:fetch-post @preview])]
+              [:a {:href (str "/epub?url=" (:url @preview))} "download"]
               [mdl/button
                :child     "取消"]]]]])])))   
 

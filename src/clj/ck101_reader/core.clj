@@ -2,7 +2,8 @@
   (:require
     [org.httpkit.client :as http]
     [clojure.core.async :as async]
-    [reaver :refer [parse extract extract-from chain text attr]]))
+    [reaver :refer [parse extract extract-from chain text attr edn data jsoup]])
+  (:import [org.jsoup.nodes Entities$EscapeMode]))
 
 (defn parse-int [s]
   (Integer/parseInt s))
@@ -31,8 +32,10 @@
       :id (get-id-from-link url)))
 
 (defn fetch-post [url]
-  (extract-post-info (:body @(http/get url)) url))
-  
+  (let [resp @(http/get url)]
+    (println resp)
+    (extract-post-info (:body resp) url)))
+
 
 (defn extract-page-content [result]
   (if-let [html (parse (-> result :body))]
@@ -40,7 +43,7 @@
                   html ".plhin"
                   [:idx :text]
                   "li.postNum em" (chain text parse-int)
-                  ".t_f" text)]
+                  ".t_f" edn)]
       posts)
     []))
 

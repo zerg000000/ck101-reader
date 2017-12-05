@@ -65,7 +65,9 @@
       (http/get link #(async/go (async/>! ajax-ch %))))
     (async/<!!
       (async/go
-        (loop [i 0 ret []]
+        (loop [i 0 ret (transient [])]
           (if (>= i number-of-calls)
-              (sort-by :idx (distinct ret))
+              (do
+                (async/close! ajax-ch)
+                (persistent! (sort-by :idx (distinct ret))))
               (recur (inc i) (into ret (async/<! ajax-ch)))))))))

@@ -1,7 +1,6 @@
 (ns ck101-reader.core
     (:require [reagent.core :as reagent]
               [re-frame.core :as re-frame]
-              [re-frisk.core :refer [enable-re-frisk!]]
               [ck101-reader.events]
               [ck101-reader.subs]
               [ck101-reader.routes :as routes]
@@ -11,7 +10,6 @@
 (defn dev-setup []
   (when config/debug?
     (enable-console-print!)
-    (enable-re-frisk!)
     (println "dev mode")))
 
 (defn mount-root []

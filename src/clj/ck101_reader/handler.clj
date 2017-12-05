@@ -46,7 +46,8 @@
                        (map #(rdr/get-page-link id %) (range 1 total-page))
                        rdr/extract-page-content 100)
             data {:meta        {:titles  [book-name]
-                                :authors [{:first-name "Peter" :last-name "Pan"}]}
+                                :authors [{:first-name (second (re-find #"作者：\s*([^\s]+)" book-name))
+                                           :last-name ""}]}
                   :cover-image {:src  (:body @(http/get cover-image
                                                         {:insecure? true
                                                          :as        :byte-array}))
@@ -61,19 +62,20 @@
                                                            (string? %) %
                                                            (map? %) (with-out-str (xml/emit-element %))
                                                            :default (str %))
-                                                        (take-while #(not= :br (:tag %)) (:content text)))))
+                                                        (take-while #(not= :br (:tag %))
+                                                                    (drop-while ; drop <i>, <br>, spaces after <i>
+                                                                      #(or (#{:br :i} (:tag %))
+                                                                           (and (string? %) (re-find #"^\s+$" %)))
+                                                                      (:content text))))))
                                       #"<[^>]*>" "")
                                     :href (str "chapt" idx ".html") :type :text
                                     :src (wrap-xhtml (with-out-str (xml/emit-element text))
                                                      {:lang "zh-TW"})})
                                  sections)}]
-        (-> (response/response (io/piped-input-stream
-                                 (fn [out]
-                                   (let [writer (EpubWriter.)]
-                                     (.write writer (-> data eres/fetch-resources epub/to-book)
-                                             out)))))
+        (-> data eres/fetch-resources epub/to-book (epub/write (str id ".epub")))
+        (-> (response/file-response (str id ".epub"))
             (response/content-type "application/epub+zip"))))
-            ;(response/header "Content-Length" (:size data)))))
+
 
 (defroutes routes
   (GET "/post_info" [url]

@@ -1,10 +1,9 @@
 (defproject ck101-reader "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.9.0-RC2"]
-                 [org.clojure/clojurescript "1.9.542"]
+                 [org.clojure/clojurescript "1.9.946"]
                  [reagent "0.7.0" :exclusions [cljsjs/react]]
                  [cljsjs/react-with-addons "15.6.1-0"]
                  [re-frame "0.10.2"]
-                 [re-frisk "0.5.3"]
                  [secretary "1.2.3"]
                  [day8.re-frame/http-fx "0.1.4"]
                  [com.yetanalytics/re-mdl "0.1.8" :exclusions [cljsjs/react-with-addons]]
@@ -20,7 +19,7 @@
                  [org.clojure/core.async "0.3.465"]
                  [epublib-clj "0.1.0-SNAPSHOT"]]
 
-  :plugins [[lein-cljsbuild "1.1.6"]]
+  :plugins [[lein-cljsbuild "1.1.7"]]
 
   :min-lein-version "2.5.3"
 

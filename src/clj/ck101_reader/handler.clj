@@ -7,6 +7,7 @@
             [ring.middleware.format :refer [wrap-restful-format]]
             [ring.middleware.gzip :refer [wrap-gzip]]
             [ck101-reader.core :as rdr]
+            [ck101-reader.extract :as extract]
             [ring.util.response :as response]
             [ring.util.io :as io]
             [epublib-clj.core :as epub]
@@ -39,38 +40,52 @@
     body
     "</body></html>"))
 
+(defn transform-content [text-or-dom]
+  (if (map? text-or-dom)
+    (let [para (update text-or-dom
+                       :content (fn [eles]
+                                  (transduce extract/content-xf conj eles)))]
+      (with-out-str
+        (xml/emit-element para)))
+    text-or-dom))
+
+(defn get-first [image]
+  (if (list? image)
+    (first image)
+    image))
+
 (defn get-epub-response
       [url]
-      (let [{:keys [id book-name url cover-image total-page description]} (rdr/fetch-post url)
+      (let [{:keys [id book-name url cover-image big-cover-image total-page description]}
+            (rdr/fetch-post url extract/extract-post-info)
             sections (rdr/fetch-all
-                       (map #(rdr/get-page-link id %) (range 1 total-page))
-                       rdr/extract-page-content 100)
+                       (map #(extract/get-page-link id %) (range 1 total-page))
+                       extract/extract-page-content 100)
             data {:meta        {:titles  [book-name]
                                 :authors [{:first-name (second (re-find #"作者：\s*([^\s]+)" book-name))
                                            :last-name ""}]}
-                  :cover-image {:src  (:body @(http/get cover-image
+                  :language "zh-TW"
+                  :types ["comedy"]
+                  :descriptions [description]
+                  :cover-image {:src  (:body @(http/get (or (get-first big-cover-image) cover-image)
                                                         {:insecure? true
                                                          :as        :byte-array}))
                                 :href "cover.png"}
                   :sections    (mapv
                                  (fn [{:keys [idx text]}]
-
                                    {:title
-                                    (string/replace
-                                      (string/trim
-                                        (apply str (map #(cond
-                                                           (string? %) %
-                                                           (map? %) (with-out-str (xml/emit-element %))
-                                                           :default (str %))
-                                                        (take-while #(not= :br (:tag %))
-                                                                    (drop-while ; drop <i>, <br>, spaces after <i>
-                                                                      #(or (#{:br :i} (:tag %))
-                                                                           (and (string? %) (re-find #"^\s+$" %)))
-                                                                      (:content text))))))
-                                      #"<[^>]*>" "")
+                                    (if (some #(= :ignore_js_op (:tag %)) (:content text))
+                                      "簡介"
+                                      (->> (transduce extract/title-xf conj (:content text))
+                                        (apply str)
+                                        string/trim
+                                        extract/remove-tag
+                                        extract/remove-return-char))
                                     :href (str "chapt" idx ".html") :type :text
-                                    :src (wrap-xhtml (with-out-str (xml/emit-element text))
-                                                     {:lang "zh-TW"})})
+                                    :src (-> text
+                                             transform-content
+                                             (wrap-xhtml
+                                               {:lang "zh-TW"}))})
                                  sections)}]
         (-> data eres/fetch-resources epub/to-book (epub/write (str id ".epub")))
         (-> (response/file-response (str id ".epub"))
@@ -80,14 +95,14 @@
 (defroutes routes
   (GET "/post_info" [url]
     {:status 200
-     :body (rdr/fetch-post url)})
+     :body (rdr/fetch-post url extract/extract-post-info)})
   (GET "/fetch_post" [id start end]
     {:status 200
      :body {:id (Integer/parseInt id)
             :sections
             (rdr/fetch-all
-              (map (partial rdr/get-page-link id) (range (Integer/parseInt start) (Integer/parseInt end)))
-              rdr/extract-page-content 100)}})
+              (map (partial extract/get-page-link id) (range (Integer/parseInt start) (Integer/parseInt end)))
+              extract/extract-page-content 100)}})
   (GET "/epub" [url]
     (get-epub-response url))
   (GET "/" [] (resource-response "index.html" {:root "public"}))

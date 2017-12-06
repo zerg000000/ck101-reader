@@ -1,56 +1,11 @@
 (ns ck101-reader.core
   (:require
     [org.httpkit.client :as http]
-    [clojure.core.async :as async]
-    [reaver :refer [parse extract extract-from chain text attr edn data jsoup]])
-  (:import [org.jsoup.nodes Entities$EscapeMode]))
+    [clojure.core.async :as async]))
 
-(defn parse-int [s]
-  (Integer/parseInt s))
-
-(defn get-total-page [txt]
-  (let [total-section (Integer/parseInt txt)]
-    (java.lang.Math/ceil (/ total-section 10.0))))
-
-(defn get-page-link [post-id page]
-  (str "https://ck101.com/thread-" post-id "-" page "-1.html"))
-
-(defn get-id-from-link [url]
-  (let [[_ post-id] (re-find #"thread-(\d+)-" url)]
-    (parse-int post-id)))
-
-(defn extract-post-info [raw-text url]
-  (assoc
-      (extract (parse raw-text)
-               [:book-name :url :cover-image :total-section :total-page :description]
-               "#thread_subject" text
-               "meta[property=og:url]" (attr "content")
-               "meta[property=og:image]" (attr "content")
-               ".replayNum" text
-               ".replayNum" (chain text get-total-page)
-               "meta[property=og:description]" (attr "content"))
-      :id (get-id-from-link url)))
-
-(defn fetch-post [url]
+(defn fetch-post [url transform-fn]
   (let [resp @(http/get url)]
-    (println resp)
-    (extract-post-info (:body resp) url)))
-
-
-(defn extract-page-content [result]
-  (if-let [html (parse (-> result :body))]
-    (let [posts (extract-from
-                  html ".plhin"
-                  [:idx :text]
-                  "li.postNum em" (chain text parse-int)
-                  ".t_f" edn)]
-      posts)
-    []))
-
-(defn fetch-all-sync [link-seq transform-fn ajax-interval]
-  (into []
-    (for [link link-seq]
-      (transform-fn @(http/get link)))))
+    (transform-fn (:body resp) url)))
 
 (defn fetch-all
   " link-seq - url need to fetch in string format
@@ -69,5 +24,9 @@
           (if (>= i number-of-calls)
               (do
                 (async/close! ajax-ch)
-                (persistent! (sort-by :idx (distinct ret))))
-              (recur (inc i) (into ret (async/<! ajax-ch)))))))))
+                (->> ret
+                     persistent!
+                     flatten
+                     distinct
+                     (sort-by :idx)))
+              (recur (inc i) (conj! ret (async/<! ajax-ch)))))))))

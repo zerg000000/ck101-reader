@@ -50,7 +50,7 @@
     text-or-dom))
 
 (defn get-first [image]
-  (if (list? image)
+  (if (coll? image)
     (first image)
     image))
 
@@ -61,13 +61,14 @@
             sections (rdr/fetch-all
                        (map #(extract/get-page-link id %) (range 1 total-page))
                        extract/extract-page-content 100)
+            _ (println (get-first big-cover-image))
             data {:meta        {:titles  [book-name]
                                 :authors [{:first-name (second (re-find #"作者：\s*([^\s]+)" book-name))
                                            :last-name ""}]}
                   :language "zh-TW"
                   :types ["comedy"]
                   :descriptions [description]
-                  :cover-image {:src  (:body @(http/get (or (get-first big-cover-image) cover-image)
+                  :cover-image {:src  (:body @(http/get (or (get-first big-cover-image) (get-first cover-image))
                                                         {:insecure? true
                                                          :as        :byte-array}))
                                 :href "cover.png"}

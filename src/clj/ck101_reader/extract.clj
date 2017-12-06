@@ -9,8 +9,12 @@
   (Integer/parseInt s))
 
 (defn get-total-page [txt]
-  (let [total-section (Integer/parseInt txt)]
-    (Math/ceil (/ total-section 10.0))))
+  (let [total-section (Integer/parseInt txt)
+        page-count (Math/ceil (/ total-section 10.0))]
+    (if (< 1 page-count)
+      page-count
+      2)))
+
 
 (defn get-page-link [post-id page]
   (str "https://ck101.com/thread-" post-id "-" page "-1.html"))

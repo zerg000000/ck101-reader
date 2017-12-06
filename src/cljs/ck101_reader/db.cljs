@@ -10,9 +10,17 @@
    :fetching false
    :posts {}
    :post-progress {}
-   :current [-1 -1 -1]
+   :current [1 1 1]
    :url-text ""
-   :forum-url "https://ck101.com/forum-3419-1.html"})
+   :forum-url "https://ck101.com/forum-3419-1.html"
+   :forum-menu [{:name "長篇小說" :id "237"}
+                {:name "日系小說" :id "1288"}
+                {:name "短篇小說" :id "855"}
+                {:name "全篇小說" :id "3419"}
+                {:name "耽美小說" :id "3446"}
+                {:name "原創言情" :id "3451"}
+                {:name "原創全本" :id "3474"}
+                {:name "出版言情" :id "1308"}]})
 
 ;; -- Local Storage  ----------------------------------------------------------
 ;;

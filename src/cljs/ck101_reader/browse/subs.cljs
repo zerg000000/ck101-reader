@@ -5,7 +5,7 @@
 (re-frame/reg-sub
  :browse-items
  (fn [db]
-   (:browse-items db)))
+   (get-in db [:browse-items])))
 
 (re-frame/reg-sub
   :forum-url

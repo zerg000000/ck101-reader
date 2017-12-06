@@ -19,4 +19,10 @@
 (re-frame/reg-event-db
   :fetch-forum-success
   (fn [db [_ cursor resp]]
-    (assoc-in db cursor (:posts resp))))
+    (assoc-in db cursor resp)))
+
+(re-frame/reg-event-db
+  :set-forum-url
+  (fn [db [_ url]]
+    (re-frame/dispatch [:fetch-forum url [:browse-items]])
+    (assoc db :forum-url url)))

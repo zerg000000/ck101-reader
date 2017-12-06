@@ -30,6 +30,13 @@
   (defroute "/view/:post" [post]
     (re-frame/dispatch [:resume-post (js/parseInt post)]))
 
+  (defroute "/forum/:id" [id]
+    (re-frame/dispatch-sync [:set-forum-url (str "https://ck101.com/forum-" id "-1.html")])
+    (re-frame/dispatch [:set-active-panel :browse-panel]))
+
+  (defroute "/forum/:id/:page-id" [id page-id]
+    (re-frame/dispatch-sync [:set-forum-url (str "https://ck101.com/forum-" id "-" page-id ".html")])
+    (re-frame/dispatch [:set-active-panel :browse-panel]))
 
   ;; --------------------
   (hook-browser-navigation!))

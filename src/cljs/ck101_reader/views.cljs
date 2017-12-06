@@ -66,7 +66,7 @@
 ;; main
 
 (defn- panels [panel-name]
-  (let [sections (re-frame/subscribe [:current-sections])
+  (let [menu (re-frame/subscribe [:menu])
         current (re-frame/subscribe [:current])]
     [mdl/layout
           :fixed-header? true
@@ -76,15 +76,14 @@
              :children
              [[mdl/layout-title
                :label "Title"]
-              (when (and (= :view-panel @panel-name) @sections)
-                [mdl/layout-nav
-                  :children
-                  (into []
-                        (for [{:keys [idx text]} @sections]
-                          ^{:key idx}
-                          [mdl/layout-nav-link
-                            :href    (str "#/view/" (first @current) "/" idx)
-                            :content idx]))])]]
+              [mdl/layout-nav
+                :children
+                (into []
+                  (for [{:keys [id name]} @menu]
+                    ^{:key id}
+                    [mdl/layout-nav-link
+                     :href    (str "#/forum/" id)
+                     :content name]))]]]
            [mdl/layout-content
              :children
              [(case @panel-name

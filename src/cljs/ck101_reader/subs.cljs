@@ -29,6 +29,11 @@
     (get-in db [:current])))
 
 (re-frame/reg-sub
+  :menu
+  (fn [db _]
+    (get-in db [:forum-menu])))
+
+(re-frame/reg-sub
   :current-text
   (fn [db _]
     (let [[post-id idx] (:current db)]

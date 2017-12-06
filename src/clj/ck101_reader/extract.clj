@@ -69,3 +69,25 @@
   (comp
     remove-update-status
     remove-cover-post))
+
+;; browse forum
+
+(defn get-forum-id-from-link [url]
+  (let [[_ post-id] (re-find #"forum-(\d+)-" url)]
+    (parse-int post-id)))
+
+(defn extract-forum-info [raw-text url]
+  (let [html (parse raw-text)]
+    (assoc
+     (extract html
+       [:previous :next]
+       "#pgt a.prev" (attr "href")
+       "#pgt a.nxt" (attr "href"))
+     :posts
+     (extract-from html
+       "#threadlisttableid .threadrow"
+       [:title :url :cover-image :last-post-time]
+       ".blockTitle" text
+       ".blockTitle a" (chain (attr "href") second)
+       ".l_bPic.lzimg" (attr "src")
+       ".lastpost_time" text))))

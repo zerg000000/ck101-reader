@@ -7,9 +7,9 @@
 
 ; interceptors
 
-(def posts->local-store 
+(def posts->local-store
   (re-frame/after (partial db/items->local-store :posts)))
-(def post-progress->local-store 
+(def post-progress->local-store
   (re-frame/after (partial db/items->local-store :post-progress)))
 
 ; events
@@ -27,7 +27,7 @@
     (let [val (:local-store cofx)
           db (:db cofx)]
       {:db (merge db val)})))
-  
+
 
 (re-frame/reg-event-db
  :set-active-panel
@@ -41,7 +41,7 @@
     (let [new-db (assoc-in db [:current 2] progress)
           post-id (get-in db [:current 0])]
       (assoc-in new-db [:post-progress post-id] (get-in new-db [:current])))))
-         
+
 
 (re-frame/reg-event-db
   :go-next-section
@@ -63,7 +63,7 @@
   [posts->local-store]
   (fn [db [_ id]]
     (update-in db [:posts] dissoc id)))
-        
+
 (re-frame/reg-event-db
   :resume-post
   (fn [db [_ post-id]]
@@ -104,7 +104,6 @@
 (re-frame/reg-event-db
   :preview-failure
   (fn [db [_ val]]
-    (println "preview failed")
     (mdl/snackbar! :message        "網址不正確！"
                    :timeout        2000)
     (assoc db :preview nil :fetching false)))

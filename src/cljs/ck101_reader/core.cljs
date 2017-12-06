@@ -3,6 +3,8 @@
               [re-frame.core :as re-frame]
               [ck101-reader.events]
               [ck101-reader.subs]
+              [ck101-reader.browse.events]
+              [ck101-reader.browse.subs]
               [ck101-reader.routes :as routes]
               [ck101-reader.views :as views]
               [ck101-reader.config :as config]))

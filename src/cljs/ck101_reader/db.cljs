@@ -1,5 +1,5 @@
 (ns ck101-reader.db
-  (:require 
+  (:require
     [re-frame.core :as re-frame]
     [cljs.reader :as reader]))
 
@@ -11,7 +11,8 @@
    :posts {}
    :post-progress {}
    :current [-1 -1 -1]
-   :url-text ""})
+   :url-text ""
+   :forum-url "https://ck101.com/forum-3419-1.html"})
 
 ;; -- Local Storage  ----------------------------------------------------------
 ;;
@@ -33,8 +34,8 @@
   :local-store
   (fn [cofx ls-key]
       "Read in keys from localstore, and process into a map we can merge into app-db."
-      (update-in 
-        cofx 
+      (update-in
+        cofx
         [:local-store]
         merge
         {ls-key (some->> (.getItem js/localStorage (name ls-key))

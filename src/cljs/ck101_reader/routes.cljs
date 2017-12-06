@@ -19,7 +19,7 @@
   ;; --------------------
   ;; define routes here
   (defroute "/" []
-    (re-frame/dispatch [:set-active-panel :home-panel]))
+    (re-frame/dispatch [:set-active-panel :browse-panel]))
 
   (defroute "/view/:post/delete" [post]
     (re-frame/dispatch [:delete-post (js/parseInt post)]))

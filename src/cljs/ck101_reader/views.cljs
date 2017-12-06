@@ -3,6 +3,7 @@
       [re-frame.core :as re-frame]
       [reagent.core :as r]
       [ck101-reader.components :as com]
+      [ck101-reader.browse.views :as browse]
       [re-mdl.core  :as mdl]))
 
 (com/setup-resize!)
@@ -52,7 +53,7 @@
                :on-click #(re-frame/dispatch [:fetch-post @preview])]
               [:a {:href (str "/epub?url=" (:url @preview))} "download"]
               [mdl/button
-               :child     "取消"]]]]])])))   
+               :child     "取消"]]]]])])))
 
 ;; about
 
@@ -80,13 +81,14 @@
                   :children
                   (into []
                         (for [{:keys [idx text]} @sections]
-                          ^{:key idx} 
+                          ^{:key idx}
                           [mdl/layout-nav-link
                             :href    (str "#/view/" (first @current) "/" idx)
-                            :content idx]))])]]  
+                            :content idx]))])]]
            [mdl/layout-content
              :children
              [(case @panel-name
+                :browse-panel [browse/browse-panel]
                 :home-panel [home-panel]
                 :view-panel [view-panel]
                 [:div])

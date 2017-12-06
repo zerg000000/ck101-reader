@@ -10,5 +10,14 @@ module.exports = {
   runtimeCaching: [{
     urlPattern: /fetch_posts.*/,
     handler: 'networkFirst'
+  },{
+    urlPattern: /fetch_forum.*/,
+    handler: 'networkFirst'
+  },{
+   urlPattern: /epub.*/,
+   handler: 'networkFirst'
+  },{
+   urlPattern: /post_info.*/,
+   handler: 'networkFirst'
   }]
 };

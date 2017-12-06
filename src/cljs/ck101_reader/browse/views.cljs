@@ -27,8 +27,8 @@
                              :style {:margin-right "8px"
                                      :width        "100px"
                                      :height       "65px"}}]]
-               :child
-                       title
+               :child [:a {:href "/"}
+                       title]
                :children
                [[mdl/list-item-sub-title
                   :child last-post-time]]]

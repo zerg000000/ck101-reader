@@ -75,7 +75,7 @@
            [mdl/layout-drawer
              :children
              [[mdl/layout-title
-               :label "Title"]
+               :label "論壇"]
               [mdl/layout-nav
                 :children
                 (into []
@@ -88,6 +88,7 @@
              :children
              [(case @panel-name
                 :browse-panel [browse/browse-panel]
+                :post-panel [browse/post-panel]
                 :home-panel [home-panel]
                 :view-panel [view-panel]
                 [:div])

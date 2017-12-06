@@ -109,8 +109,6 @@
   (GET "/fetch_forum" [url]
     {:status 200
      :body (rdr/fetch-post url extract/extract-forum-info)})
-  (GET "/" [] (resource-response "index.html" {:root "public"}))
-  ;(GET "" [] (resource-response "index.html" {:root "public"}))
   (resources "/"))
 
 (def dev-handler (-> #'routes wrap-reload (wrap-defaults api-defaults) (wrap-restful-format) (wrap-gzip)))

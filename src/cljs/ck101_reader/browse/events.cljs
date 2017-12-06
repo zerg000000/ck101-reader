@@ -19,7 +19,13 @@
 (re-frame/reg-event-db
   :fetch-forum-success
   (fn [db [_ cursor resp]]
-    (assoc-in db cursor resp)))
+    (-> (assoc-in db cursor resp)
+        (assoc :fetching false))))
+
+(re-frame/reg-event-db
+  :fetch-forum-failure
+  (fn [db [_ cursor resp]]
+    (assoc db :fetching false)))
 
 (re-frame/reg-event-db
   :set-forum-url

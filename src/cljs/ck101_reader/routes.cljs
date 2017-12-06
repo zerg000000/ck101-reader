@@ -38,5 +38,12 @@
     (re-frame/dispatch-sync [:set-forum-url (str "https://ck101.com/forum-" id "-" page-id ".html")])
     (re-frame/dispatch [:set-active-panel :browse-panel]))
 
+  (defroute "/post/:id" [id]
+            (re-frame/dispatch-sync [:set-forum-url (str "https://ck101.com/post-" id "-1.html")])
+            (re-frame/dispatch [:set-active-panel :browse-panel]))
+
+  (defroute "/post/:id/:page-id" [id page-id]
+            (re-frame/dispatch-sync [:set-forum-url (str "https://ck101.com/post-" id "-" page-id ".html")])
+            (re-frame/dispatch [:set-active-panel :browse-panel]))
   ;; --------------------
   (hook-browser-navigation!))
